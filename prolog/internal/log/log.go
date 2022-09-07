@@ -1,7 +1,6 @@
 package log
 
 import (
-	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -39,15 +38,15 @@ func NewLog(dir string, c Config) (*Log, error) {
 }
 
 func (l *Log) setup() error {
-    // read directory
+	// read directory
 	files, err := ioutil.ReadDir(l.Dir)
 	if err != nil {
 		return err
 	}
 
-    // iterate over files
-    // and parse the file name the filename is constructed
-    // from offset + .store
+	// iterate over files
+	// and parse the file name the filename is constructed
+	// from offset + .store
 	var baseOffsets []uint64
 	for _, file := range files {
 		offStr := strings.TrimSuffix(
@@ -59,18 +58,18 @@ func (l *Log) setup() error {
 		baseOffsets = append(baseOffsets, off)
 	}
 
-    // order by offset
+	// order by offset
 	sort.Slice(baseOffsets, func(i, j int) bool {
 		return baseOffsets[i] < baseOffsets[j]
 	})
-    // for each existing file create a segment
+	// for each existing file create a segment
 	for i := 0; i < len(baseOffsets); i++ {
 		if err = l.newSegment(baseOffsets[i]); err != nil {
 			return err
 		}
 		i++
 	}
-    // if the current log does not has any segments create one.
+	// if the current log does not has any segments create one.
 	if l.segments == nil {
 		if err = l.newSegment(l.Config.Segment.InitialOffset); err != nil {
 			return err
@@ -82,13 +81,13 @@ func (l *Log) setup() error {
 func (l *Log) Append(record *api.Record) (uint64, error) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
-    // append record to the current active segment
+	// append record to the current active segment
 	off, err := l.activeSegment.Append(record)
 	if err != nil {
 		return 0, err
 	}
-    // if the current segment is maxed out
-    // a new segment will be generated as the new active segment
+	// if the current segment is maxed out
+	// a new segment will be generated as the new active segment
 	if l.activeSegment.IsMaxed() {
 		err = l.newSegment(off + 1)
 	}
@@ -98,22 +97,22 @@ func (l *Log) Append(record *api.Record) (uint64, error) {
 func (l *Log) Read(off uint64) (*api.Record, error) {
 	l.mu.RLock()
 	defer l.mu.RUnlock()
-    
+
 	var s *segment
-    // searching for the segment that contains the
-    // the given offset
+	// searching for the segment that contains the
+	// the given offset
 	for _, segment := range l.segments {
-        // the segment contains the offset if the offset is between
-        // the segments baseOffset and the segments nextOffset
+		// the segment contains the offset if the offset is between
+		// the segments baseOffset and the segments nextOffset
 		if segment.baseOffset <= off && off < segment.nextOffset {
 			s = segment
 			break
 		}
 	}
 
-    // the log is broken
+	// the log is broken
 	if s == nil || s.nextOffset <= off {
-		return nil, fmt.Errorf("offset out of range:  %d", off)
+		return nil, api.ErrOffsetOutOfRange{Offset: off}
 	}
 
 	return s.Read(off)
