@@ -1,6 +1,8 @@
-module github.com/devlsc/prolog
+module github.com/devlsc/distributed_services_with_go/prolog
 
 go 1.18
+
+require google.golang.org/protobuf v1.25.0
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -12,6 +14,5 @@ require (
 	github.com/tysonmote/gommap v0.0.2 // indirect
 	golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543 // indirect
 	google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013 // indirect
-	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
