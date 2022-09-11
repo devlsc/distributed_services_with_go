@@ -5,7 +5,7 @@ import (
 	"os"
 	"path"
 
-	api "github.com/devlsc/distributed_services_with_go/prolog/api/v1"
+	api "github.com/devlsc/distributed_services_with_go/proglog/api/v1"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -78,7 +78,7 @@ func (s *segment) Append(record *api.Record) (offset uint64, err error) {
 	); err != nil {
 		return 0, err
 	}
-    s.nextOffset++
+	s.nextOffset++
 	return cur, nil
 }
 

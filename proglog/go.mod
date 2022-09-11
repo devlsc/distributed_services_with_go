@@ -1,4 +1,4 @@
-module github.com/devlsc/distributed_services_with_go/prolog
+module github.com/devlsc/distributed_services_with_go/proglog
 
 go 1.18
 

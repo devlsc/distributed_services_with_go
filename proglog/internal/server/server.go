@@ -3,7 +3,7 @@ package server
 import (
 	"context"
 
-	api "github.com/devlsc/distributed_services_with_go/prolog/api/v1"
+	api "github.com/devlsc/distributed_services_with_go/proglog/api/v1"
 	"google.golang.org/grpc"
 )
 
@@ -23,8 +23,8 @@ type grpcServer struct {
 	*Config
 }
 
-func NewGRPCServer(config *Config) (*grpc.Server, error) {
-	gsrv := grpc.NewServer()
+func NewGRPCServer(config *Config, opts ...grpc.ServerOption) (*grpc.Server, error) {
+	gsrv := grpc.NewServer(opts...)
 	srv, err := newgrpcServer(config)
 	if err != nil {
 		return nil, err
@@ -96,4 +96,4 @@ func (s *grpcServer) ConsumeStream(req *api.ConsumeRequest, stream api.Log_Consu
 	}
 }
 
-func(s *grpcServer) mustEmbedUnimplementedLogServer(){}
+func (s *grpcServer) mustEmbedUnimplementedLogServer() {}
