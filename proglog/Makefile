@@ -13,8 +13,9 @@ gencert:
 		-ca=ca.pem \
 		-ca-key=ca-key.pem \
 		-config=test/ca-config.json \
-		-proflie=server \
+		-profile=server \
 		test/server-csr.json | cfssljson -bare server
+	mv *.pem *.csr ${CONFIG_PATH}
 
 .PHONY: compile
 compile:k
